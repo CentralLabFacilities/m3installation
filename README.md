@@ -1,69 +1,77 @@
 M3 Installation instructions
 ==============
 
-This wiki describes the full installation of m3 software to control/simulate the Meka robot
+This wiki describes the full installation of m3 software to control/simulate the Meka robot at Ensta PariTech.
+
+Author
 
 !Meka Installation Instructions 
 Tested on :
-|| border=1
-|| '''OS Tested''' || '''Status''' || '''Notes''' ||
-|| Ubuntu 12.04 x86 || OK || Kinects might cause issues ||
-|| Ubuntu 12.04 x64 || OK || Kinects might cause issues ||
-|| Ubuntu 12.10 x86 || OK || On the Meka 04.04.14 -> will update to 14.04 LTS when ready ||
-|| Ubuntu 12.10 x64 || OK || Now working 04.04.14 ||
-|| Ubuntu 13.04 x86 || OK || ||
-|| Ubuntu 13.04 x64 || OK || ||
-|| Ubuntu 13.10 x86 || OK || w ROS Indigo ||
-|| Ubuntu 14.04 x64 || OK || w ROS Indigo ||
 
-#Ubuntu 12.04 - 14.04 (x86/x64) w/ ROS Hydro/Indigo
+| ***OS Tested*** | ***Status*** | ***Notes***
+|:------------------|:----:|:---------------:
+| Ubuntu 12.04 x86 | OK | Kinects might cause issues 
+| Ubuntu 12.04 x64 | OK | Kinects might cause issues 
+| Ubuntu 12.10 x86 | OK | On the Meka 04.04.14 -> will update to 14.04 LTS when ready 
+| Ubuntu 12.10 x64 | OK | Now working 04.04.14 
+| Ubuntu 13.04 x86 | OK | 
+| Ubuntu 13.04 x64 | OK | 
+| Ubuntu 13.10 x86 | OK | w ROS Indigo 
+| Ubuntu 14.04 x64 | OK | w ROS Indigo/MoveIt! 
 
-##Prerequisites
 
+## Ubuntu 12.04 - 14.04 (x86/x64) w/ ROS Hydro/Indigo
+
+### Prerequisites
+#### Necessary 
 ```bash
-sudo apt-get install libqt4-dev moc g++ libncurses5-dev kernel-package gcc-multilib libc6-dev libtool automake cmake git openssh-server openssh-client libeigen3-dev libprotobuf-dev protobuf-compiler gnuplot-x11 libboost-dev protobuf-compiler python-dev libprotobuf-dev python-protobuf python-matplotlib python-yaml python-gnuplot python-scipy python-sip-dev python-sip sip-dev swig
+sudo apt-get install cmake git libeigen3-dev libprotobuf-dev protobuf-compiler gnuplot-x11 libboost-dev python-dev python-protobuf python-matplotlib python-yaml python-gnuplot python-scipy python-sip-dev python-sip sip-dev swig
+```
+#### Nice to have to maybe compile a kernel later
+```bash
+sudo apt-get install libqt4-dev moc g++ libncurses5-dev kernel-package gcc-multilib libc6-dev libtool automake  openssh-server openssh-client
+```
+## Installation
+### The RTAI-patched kernel
+```bash
+# Determine if x86 or x64 (x86_x64)
+_platform=$(uname -m) 
+
+# Get the Rtai4.0 patched kernel headers
+wget http://perso.ensta-paristech.fr/~hoarau/rtmeka-kern/$_platform/linux-headers-rt.deb
+
+# Get the Rtai4.0 patched kernel image
+wget http://perso.ensta-paristech.fr/~hoarau/rtmeka-kern/$_platform/linux-image-rt.deb
+
+# Install the kernel
+sudo dpkg -ilinux-headers-rt.deb /usr/src
+sudo mv linux-image-rt.deb /usr/src
 ```
 
-##Install the real-time kernel
-### Preparation
+Now **boot** on the new kernel using **grub** at **startup**.
+> Note : you might have to either hold sift on startup or update the grub config to boot on the rtai patched kernel: 
 ```bash
-_user=$(id -u)
-_group=$(id -g)
-sudo chown -R $_user:$_group /usr/local/src/ /usr/src/
+sudo nano /etc/defaults/grub
 ```
+
+### RTAI 4.0 installation 
+#### Download
+```bash
+wget --no-check-certificate https://www.rtai.org/userfiles/downloads/RTAI/rtai-4.0.tar.bz2
+tar xjf rtai-4.0.tar.bz2
+sudo mv rtai-4.0 /usr/local/src
+sudo ln -s rtai-4.0 rtai
+```
+
+#### Installation
+```sh
+cd /usr/local/src/rtai
+sudo mkdir build
+cd build
+sudo make -f ../makefile menuconfig
+```
+
 ----------------------------
-### If x86 (32bits)
-### Downloading
-```bash
-cd /usr/src/
-wget http://perso.ensta-paristech.fr/~hoarau/rtmeka-kern/x86/linux-headers-3.8.13-rtmeka4.0_3.8.13-rtmeka4.0-10.00.Custom_i386.deb
-
-wget http://perso.ensta-paristech.fr/~hoarau/rtmeka-kern/x86/linux-image-3.8.13-rtmeka4.0_3.8.13-rtmeka4.0-10.00.Custom_i386.deb
-```
-### Installation
-```bash
-sudo dpkg -i linux-headers-3.8.13-rtmeka4.0_3.8.13-rtmeka4.0-10.00.Custom_i386.deb
-sudo dpkg -i linux-image-3.8.13-rtmeka4.0_3.8.13-rtmeka4.0-10.00.Custom_i386.deb
-```
-----------------------------
-----------------------------
-### If x64 (64bits)
-### Downloading
-```bash
-cd /usr/src/
-wget http://perso.ensta-paristech.fr/~hoarau/rtmeka-kern/x64/linux-headers-3.8.13-rtmeka4.0_3.8.13-rtmeka4.0-10.00.Custom_amd64.deb
-
-wget http://perso.ensta-paristech.fr/~hoarau/rtmeka-kern/x64/linux-image-3.8.13-rtmeka4.0_3.8.13-rtmeka4.0-10.00.Custom_amd64.deb
-```
-
-### Installation 
-```bash
-sudo dpkg -i linux-headers-3.8.13-rtmeka4.0_3.8.13-rtmeka4.0-10.00.Custom_amd64.deb
-sudo dpkg -i linux-image-3.8.13-rtmeka4.0_3.8.13-rtmeka4.0-10.00.Custom_amd64.deb
-```
-----------------------------
-
-[++NOW REBOOT ON THE NEW KERNEL ##++]
 
 ### Post Install 
 ```bash
