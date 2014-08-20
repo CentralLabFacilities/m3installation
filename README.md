@@ -195,7 +195,7 @@ git submodule update
 git submodule foreach git checkout master
 ```
 ### Installation
-
+#### Holomni PCV for the mobile base
 > If on Ubuntu 14.04 LTS:
 ```bash
 sudo add-apt-repository ppa:hoarau-robotics/ppa
@@ -212,14 +212,9 @@ make -j5
 sudo make install
 ```
 
+#### Mekabot
 
 ```bash
-cd ~/mekabot
-cd holomni_pcv
-mkdir build;cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j5
-sudo make install
 cd ~/mekabot
 mkdir build;cd build
 cmake .. -DETHERCAT=0 -DCMAKE_BUILD_TYPE=Release
@@ -227,47 +222,34 @@ make -j5
 sudo make install
 ```
 
-```bash
-#cd ~/mekabot/m3core
-#./autogen.sh
-#./configure --disable-ethercat
-#make -j5
-#sudo make install
-#git add .
-#git stash
-```
-
-
-```bash
-#source scripts/disable_ros
-#cd ~/mekabot/m3meka
-#./autogen.sh
-#./configure
-#make -j5
-#sudo make install
-#git add .
-#git stash
-```
-
-##!Update your bashrc
+## Update your bashrc
 ```bash
 touch ~/.m3rc
 echo '
+##################################################################
 ## Meka
-export M3_ROBOT=~/mekabot/m3ens/real_meka
-export MALLOC_CHECK_=0
 
+#export M3_ROBOT=~/mekabot/m3ens/real_meka # Real meka config
+export M3_ROBOT=~/mekabot/m3ens/virtual_meka # Simulated Meka
+
+export MALLOC_CHECK_=0 # Some Hack for Python
+
+##################################################################
 ## ROS
-export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/mekabot/m3core/ros:~/mekabot/m3meka/ros:~/mekabot/meka-ros-pkg
-export ROS_MASTER_URI=http://meka-moch:11311
-export ROS_IP=192.168.20.117
-source /opt/ros/hydro/setup.bash
 
+#export ROS_MASTER_URI=http://meka-moch:11311 # If on real Meka, roscore is launched from meka-moch
+#export ROS_IP=192.168.20.117 # Fix here your IP to avoid conflicts on Meka
+source /opt/ros/hydro/setup.bash # Can be Hydro or Indigo
+
+##################################################################
 ## ROS-workspace
+
 source ~/catkin_ws/install_isolated/setup.bash
 source ~/catkin_ws/devel/setup.bash
 
+##################################################################
 ## Additional Meka-stuff
+
 export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/mekabot/m3ens-demos/ros:~/mekabot/m3ens-tutos/ros:~/mekabot/m3ens-utils/ros:~/mekabot/meka-ros-pkg:~/mekabot/m3core/ros:~/mekabot/m3meka/ros
 export PYTHONPATH=$PYTHONPATH:~/mekabot/m3ens-demos/scripts:~/mekabot/m3ens-utils/scripts:~/mekabot/m3ens-utils/python:~/mekabot/m3ens-utils/ros
 '>>~/.m3rc
@@ -276,7 +258,7 @@ echo 'source ~/.m3rc' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-##!Get time synchronization for ROS (HIGHLY RECOMMENDED)
+### Get time synchronization for ROS (HIGHLY RECOMMENDED)
 ```bash
 sudo nano /etc/ntp.conf
 ```
@@ -296,7 +278,7 @@ server ntp.ubuntu.com
 sudo service ntp restart
 ```
 
-Force the time to update every day (can drift after long shutdown) (OPTIONAL)
+> (OPTIONAL) Force the time to update every day (can drift after long shutdown) 
 ```bash
 sudo -s
 touch /etc/cron.daily/ntpdate
@@ -308,7 +290,7 @@ sudo chmod 755 /etc/cron.daily/ntpdate
 
 
 
-##Setup robot's Pcs (OPTIONAL):
+### (OPTIONAL) Setup robot's Pcs :
 ```bash
 sudo -s
 echo '192.168.20.117 meka-mob'>>/etc/hosts
@@ -317,11 +299,11 @@ echo '192.168.20.119 meka-mud'>>/etc/hosts
 exit
 ```
 
-
-Now open the robot_config :
+## Update the hostname (virtual installation)
+If you want to run a simulated robot, you need to be the realtime controller and client. To do so, open the robot_config :
 
 ```bash
-gedit $M3_ROBOT/robot_config/m3_config.yml
+gedit ~/mekabot/m3ens/robot_config/m3_config.yml
 ```
 
 And change the host name to your computer's hostname.
@@ -329,8 +311,11 @@ And change the host name to your computer's hostname.
 ```bash
 more /etc/hostname
 ```
+## Run the server and visualize the robot on Rviz
+```bash
+m3rt_server_run # run the realtime server
+roslaunch meka_description m3ens_viz.launch # launch robot description, robot state publisher, joint state publisher and rviz
+```
 
+## You're done !
 
-
-
-## You're done ! you can try to launch something now.
