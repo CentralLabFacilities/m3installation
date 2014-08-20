@@ -23,7 +23,7 @@ This wiki describes the full installation of m3 software to control/simulate the
 ### Prerequisites
 #### Necessary 
 ```bash
-sudo apt-get install cmake git libeigen3-dev libprotobuf-dev protobuf-compiler gnuplot-x11 libboost-dev python-dev python-protobuf python-matplotlib python-yaml python-gnuplot python-scipy python-sip-dev python-sip sip-dev swig
+sudo apt-get install cmake git libeigen3-dev libprotobuf-dev protobuf-compiler gnuplot-x11 libboost-dev python-dev python-protobuf python-matplotlib python-yaml python-gnuplot python-scipy python-sip-dev python-sip sip-dev swig python-pandas python-sympy python-nose python-numpy
 ```
 #### Nice to have to maybe compile a kernel later
 ```bash
@@ -63,7 +63,7 @@ tar xjf rtai-4.0.tar.bz2
 ```
 
 #### Installation
-```sh
+```bash
 cd rtai-4.0
 mkdir build; cd build
 ../configure --disable-comedi-lxrt --enable-cpus=$(nproc) --enable-math-c99 --with-linux-dir=/usr/src/linux-headers-3.8.13-rtmeka4.0
@@ -107,29 +107,35 @@ sudo sh -c "echo 'deb http://packages.ros.org/ros/ubuntu $codename main' > /etc/
 codename=`cat /etc/lsb-release | grep -m 1 "DISTRIB_CODENAME=" | cut -d "=" -f2`
 sudo sh -c "echo 'deb http://fermion.ensta.fr/ros/ubuntu $codename main' > /etc/apt/sources.list.d/ros-latest.list"
 ```
+
+> If on Ubuntu < 13.10
+```bash
+ROS_DISTRO=hydro
+```
+
+> If on Ubuntu > 13.10
+```bash
+ROS_DISTRO=indigo
+```
+
+#### ROS + MoveIt! + ROS Control
 ```bash
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 sudo apt-get update
-export ROS_DISTRO=hydro
-sudo apt-get install ros-$ROS_DISTRO-desktop-full ros-$ROS_DISTRO-moveit-full ros-$ROS_DISTRO-openni* ros-$ROS_DISTRO-ros-control ros-$ROS_DISTRO-ros-controllers python-rosinstall python-pip
-sudo apt-get update
-#sudo apt-get install --only-upgrade python-rosdistro python-rosdep #python-rosinstall python-rosinstall-generator python-bloom
-#sudo pip install --upgrade rosdistro
-```
-
-```bash
-#_user=$(id -u)
-#_group=$(id -g)
-#sudo chown -R $_user:$_group /usr/local/ 
-#sudo apt-get install curl
-#curl https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | #python
-#sudo pip install --upgrade rosdistro
+sudo apt-get install ros-$ROS_DISTRO-desktop-full ros-$ROS_DISTRO-moveit-full ros-$ROS_DISTRO-ros-control ros-$ROS_DISTRO-ros-controllers python-rosinstall python-pip
 ```
 ```bash
 sudo -E rosdep init
 rosdep update
+```
+#### Openni (ROS Hydro Only)
+```bash
+sudo apt-get install ros-$ROS_DISTRO-openni*
+```
 
-source /opt/ros/hydro/setup.bash
+#### Create the ROS-workspace
+```bash
+source /opt/ros/$ROS_DISTRO/setup.bash
 ## Create the ROS-workspace
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
@@ -137,6 +143,8 @@ catkin_init_workspace
 cd ~/catkin_ws/
 catkin_make
 ```
+
+#### Post-install
 ```bash
 sudo -s
 echo '/usr/local/lib' >> /etc/ld.so.conf
@@ -144,7 +152,7 @@ exit
 sudo ldconfig
 ```
 
-## (FIXED) Workaround for KDL issues (Go back here AFTER install)
+##~~ Workaround for KDL issues~~
 
 The function SetPayload that allow to modify how much weight the robot carries requires a tiny patch on the KDL library. This is a temporary solution.
 
@@ -161,13 +169,10 @@ make -j5
 sudo make install 
 ```
 
-
+> Note : June 2014 fixed, using ros orocos-kdl instead, so no need to install this.
 
 ##Install some M3 required libraries
 ##!Generic libraries
-```bash
-sudo apt-get install cmake libboost-dev libtool swig python-dev ipython subversion g++ python-dev python-yaml python-gnuplot python-matplotlib  libprotobuf-dev libprotoc-dev python-protobuf nfs-common vim git libeigen2-dev libeigen2-doc libyaml-0-2 ntp autoconf python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose ssh
-```
 
 ##(Recommended) Install some IDEs
 
