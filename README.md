@@ -68,29 +68,26 @@ cd rtai-4.0
 mkdir build; cd build
 ../configure --disable-comedi-lxrt --enable-cpus=$(nproc) --enable-math-c99 --with-linux-dir=/usr/src/linux-headers-3.8.13-rtmeka4.0
 make -j$(nproc)
+sudo make install
 ```
-Note : The --with-linux-dir option 
+> **Note** : The --with-linux-dir option has to match the rtai-patched kernel
 
-
-Note : On 64-bit CPUs, if an error regarding -mpreferred-cache-boundary=3 shows up, edit line 57 in /usr/src/linux/arch/x86/Makefile to set this parameter to 4:
+> ----
+> **Know issues** : On 64-bit CPUs, if an error regarding -mpreferred-cache-boundary=3 shows up, edit line 57 in /usr/src/linux/arch/x86/Makefile (where linux is your rtai patched kernel) to set this parameter to 4:
 ```bash
 KBUILD_CFLAGS += $(call cc-option,-mno-sse -mpreferred-stack-boundary=4)
 ```
 Part of the explanation: http://mail.rtai.org/pipermail/rtai/2013-December/026198.html
 
-Note : Known issue on 12.04 32 bits machines 
+> ----
+> **Know issues** : on 12.04 32 bits machines, rtai fails to compile (some header is missing)
 ```bash
 sudo apt-get install gcc-multilib g++-multilib libc6-dev
 sudo ln -s /usr/include/i386-linux-gnu/gnu/stubs-32.h /usr/include/gnu/stubs-32.h
 ```
 
 ### Post install
-```bash
-sudo cp -a /dev/rtai_shm /lib/udev/devices/
-sudo cp -a /dev/rtf[0-9] /lib/udev/devices/
-```
-Note : One should say no such file or directory. whatever.
-
+Update the ld library path to find rtai:
 ```bash
 sudo -s
 echo /usr/realtime/lib/ > /etc/ld.so.conf.d/rtai.conf
