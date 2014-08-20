@@ -1,12 +1,10 @@
 M3 Installation instructions
 ==============
 
-This wiki describes the full installation of m3 software to control/simulate the Meka robot at Ensta PariTech.
+This wiki describes the full installation of m3 software to control/simulate the Meka robot at Ensta ParisTech.
 
-Author
+>  *Author* : Antoine Hoarau <hoarau.robotics@gmail.com>
 
-!Meka Installation Instructions 
-Tested on :
 
 | ***OS Tested*** | ***Status*** | ***Notes***
 |:------------------|:----:|:---------------:
@@ -31,8 +29,10 @@ sudo apt-get install cmake git libeigen3-dev libprotobuf-dev protobuf-compiler g
 ```bash
 sudo apt-get install libqt4-dev moc g++ libncurses5-dev kernel-package gcc-multilib libc6-dev libtool automake  openssh-server openssh-client
 ```
-## Installation
+------
+
 ### The RTAI-patched kernel
+#### Download
 ```bash
 # Determine if x86 or x64 (x86_x64)
 _platform=$(uname -m) 
@@ -42,13 +42,14 @@ wget http://perso.ensta-paristech.fr/~hoarau/rtmeka-kern/$_platform/linux-header
 
 # Get the Rtai4.0 patched kernel image
 wget http://perso.ensta-paristech.fr/~hoarau/rtmeka-kern/$_platform/linux-image-rt.deb
+```
+#### Installation
 
-# Install the kernel
-sudo dpkg -ilinux-headers-rt.deb /usr/src
-sudo mv linux-image-rt.deb /usr/src
+```bash
+sudo dpkg -i linux-headers-rt.deb linux-image-rt.deb
 ```
 
-Now **boot** on the new kernel using **grub** at **startup**.
+Now **boot** on the new kernel using **grub** at **startup**. Please note the name of the kernel.
 > Note : you might have to either hold sift on startup or update the grub config to boot on the rtai patched kernel: 
 ```bash
 sudo nano /etc/defaults/grub
@@ -59,60 +60,17 @@ sudo nano /etc/defaults/grub
 ```bash
 wget --no-check-certificate https://www.rtai.org/userfiles/downloads/RTAI/rtai-4.0.tar.bz2
 tar xjf rtai-4.0.tar.bz2
-sudo mv rtai-4.0 /usr/local/src
-sudo ln -s rtai-4.0 rtai
 ```
 
 #### Installation
 ```sh
-cd /usr/local/src/rtai
-sudo mkdir build
-cd build
-sudo make -f ../makefile menuconfig
+cd rtai-4.0
+mkdir build; cd build
+../configure --disable-comedi-lxrt --enable-cpus=$(nproc) --enable-math-c99 --with-linux-dir=/usr/src/linux-headers-3.8.13-rtmeka4.0
+make -j$(nproc)
 ```
+Note : The --with-linux-dir option 
 
-----------------------------
-
-### Post Install 
-```bash
-cd /usr/src/
-ln -snf linux-headers-3.8.13-rtmeka4.0 linux
-```
-
-## Install Rtai 4.0
-### Preparation
-```bash
-_user=$(id -u)
-_group=$(id -g)
-sudo chown -R $_user:$_group /usr/local/src/ /usr/src/
-```
-### Downloading
-```bash
-cd /usr/local/src
-wget --no-check-certificate https://www.rtai.org/userfiles/downloads/RTAI/rtai-4.0.tar.bz2
-tar xjf rtai-4.0.tar.bz2
-ln -s rtai-4.0 rtai
-```
-
-### Installing
-```bash
-cd /usr/local/src/rtai
-sudo mkdir build
-cd build
-sudo make -f ../makefile menuconfig
-```
-
-### Configuration
-* General > Linux source tree = /usr/src/linux
-* Machine (x86) > Number of CPUs = (2) for Core-Duo or (4) for Quad-Core
-* DISABLE COMEDI
-* ENABLE MATH FUNC IN KERNEL (In Base System > Other Features)
-
-If everything when smooth, lets compile and install.
-### Compile/install
-```bash
-sudo make install
-```
 
 Note : On 64-bit CPUs, if an error regarding -mpreferred-cache-boundary=3 shows up, edit line 57 in /usr/src/linux/arch/x86/Makefile to set this parameter to 4:
 ```bash
