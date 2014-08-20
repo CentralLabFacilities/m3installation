@@ -222,6 +222,8 @@ make -j5
 sudo make install
 ```
 
+> Note : future option -DVIRTUAL=1 will remove fake ethercat module synchronization to avoid overrruns
+
 ## Update your bashrc
 ```bash
 touch ~/.m3rc
