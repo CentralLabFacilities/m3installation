@@ -96,7 +96,7 @@ sudo ldconfig
 ```
 
 
-## Install ROS-HYDRO
+## Install ROS
 !### If not at ENSTA
 ```bash
 codename=`cat /etc/lsb-release | grep -m 1 "DISTRIB_CODENAME=" | cut -d "=" -f2`
@@ -152,75 +152,36 @@ exit
 sudo ldconfig
 ```
 
-##~~ Workaround for KDL issues~~
+### Workaround for KDL issues
 
 The function SetPayload that allow to modify how much weight the robot carries requires a tiny patch on the KDL library. This is a temporary solution.
 
 ```bash
-cd ~/catkin_ws/src
-git clone https://github.com/ahoarau/orocos_kinematics_dynamics
-cd orocos_kinematics_dynamics/orocos_kdl
-mkdir build;cd build; cmake ..
-make -j5
-sudo make install
-cd ../../python_orocos_kdl/
-mkdir build;cd build;cmake ..
-make -j5
-sudo make install 
+#cd ~/catkin_ws/src
+#git clone https://github.com/ahoarau/orocos_kinematics_dynamics
+#cd orocos_kinematics_dynamics/orocos_kdl
+#mkdir build;cd build; cmake ..
+#make -j5
+#sudo make install
+#cd ../../python_orocos_kdl/
+#mkdir build;cd build;cmake ..
+#make -j5
+#sudo make install 
 ```
 
-> Note : June 2014 fixed, using ros orocos-kdl instead, so no need to install this.
+> Note : This issue has been fixed in june 2014, we now use the ros orocos kdl.
 
-##Install some M3 required libraries
-##!Generic libraries
+### (Recommended) Install some IDEs
 
-##(Recommended) Install some IDEs
-
-#Python (for most users): '''Eclipse+PyDev'''
+#### Python (for most users): Eclipse + PyDev
 ```bash
 sudo apt-get install eclipse
 ```
 
-#ROS and C++ Real-time (Advanced users): '''Qt creator''' and/or Kdevelop
+#### ROS and C++ Real-time (Advanced users): Qt creator and/or Kdevelop
 ```bash
 sudo apt-get install qtcreator 
 sudo apt-get install kdevelop
-```
-
-##Get the whole ENSTA M3 
-
-```bash
-ssh-keygen
-```
-Press Enter 3 times.
-```bash
-gedit ~/.ssh/id_rsa.pub
-```
-Copy the whole key, then go to [[https://bitbucket.org/|Bitbucket]] and add your ssh key to ensta-user account.
-Top right corner,Manage account, SSh key, Add key (follow the instructions).
-
-login : ensta-user 
-password : &ROBOT!CS
-
-```bash
-#cd
-#git clone git@bitbucket.org:ensta/kdl-meka
-#cd kdl-meka
-#mkdir build;cd build;cmake ..
-#make -j5
-#sudo make install
-#cd ../../
-#rm -rf kdl-meka
-```
-
-```bash
-#cd
-#git clone git@bitbucket.org:ensta/holomni_pcv.git
-#cd holomni_pcv
-#./autogen.sh
-#./configure
-#make -j5
-#sudo make install
 ```
 
 ##Install ENSTA M3
@@ -229,24 +190,31 @@ password : &ROBOT!CS
 ```bash
 git clone --recursive git@bitbucket.org:ensta/mekabot.git ~/mekabot
 cd ~/mekabot
-#git checkout cmakemigration
 git submodule init
 git submodule update
 git submodule foreach git checkout master
-
-#cd m3core
-#git checkout cmakemigration
-#cd m3meka
-#git checkout cmakemigration
-#cd holomni_pcv
-#git checkout cmakemigration
-
-cd m3ens
-git checkout newvirtualmeka
 ```
+### Installation
+
+> If on Ubuntu 14.04 LTS:
+```bash
+sudo add-apt-repository ppa:hoarau-robotics/ppa
+sudo apt-get update
+sudo apt-get install holomni-pcv
+```
+> If not :
 ```bash
 cd ~/mekabot
-source m3core/scripts/disable_ros
+cd holomni_pcv
+mkdir build;cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j5
+sudo make install
+```
+
+
+```bash
+cd ~/mekabot
 cd holomni_pcv
 mkdir build;cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
