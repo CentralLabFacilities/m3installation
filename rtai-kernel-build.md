@@ -1,53 +1,39 @@
-! Meka virtual installation instructions (Beta version)
+How to build an RTAI patched kernel from scratch
+======
 
+# The Linux Kernel
+Current version (Works also with 2.6 Kernels, 3.4.6, 3.4.67 , and 3.5.7).
 ```bash
-_user=$(id -u)
-_group=$(id -g)
-sudo chown -R $_suer:$_group /usr/local/src/ /usr/src/
+kernel_version=3.8.13
 ```
 
-
-## Meka virtual installation instructions (Alpha version)
-* Get virtualbox + Extension pack
-* copy the meka-mob-sim virtualbox image on your Hard Drive from http://perso.ensta-paristech.fr/~hoarau/
-* Configure a new virtual machine with this image
-* (OPTIONAL) configure the external ethernet card to communicate with robot
-file->preferences->Network->Hosts-only Network-> (+) button and OK
-* Launch the virtual image
-* The kernel to launch is in 'previous linux versions' -> blabla rtai 3.9
-* login meka ; passwd: meka
-* startx 
-* open a terminal -> m3rt_server_run (real time server)
-* open a terminal -> roslaunch meka_description ens.launch (robot state publisher)
-* open a terminal -> rosrun meka_description meka_ros_state.py (joint publisher)
-* open a terminal -> m3_demo_head_s2r1.py
-* open a terminal -> rosrun rviz rviz
-
+## Prerequisites
+For menuconfig to work:
 ```bash
-ssh meka@192.168.56.101
-echo 'export ROS_MASTER_URI=http://name of your machine:11311'>>~/.m3rc
-sudo echo 'ipofyourmachine nameofyourmachine'>>/etc/hosts
+sudo apt-get install libncurses5-dev kernel-package libc6-dev
+```
+And for xconfig to work:
+```bash
+sudo apt-get install qt4-qmake libqt4-dev
 ```
 
+## Preparation
 ```bash
-sudo echo '192.168.56.101 meka-mob-sim'>>/etc/hosts
-```
-
-## Complete Real time meka installation (hackers only)
-You just need to install rtai patched kernel and follow the classic installation instructions.
-```bash
-sudo apt-get install libqt4-dev moc g++ libncurses5-dev kernel-package gcc-multilib libc6-dev
-```
-```bash
-sudo passwd
-sudo chown -R meka:meka /usr/local/src/ /usr/src/
-cd /usr/src
 wget https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.4.67.tar.bz2
 tar xjf linux-3.4.67.tar.bz2
 mv linux-3.4.67 linux-build-3.4.67-rtai-4.0
 ln -snf linux-build-3.4.67-rtai-4.0 linux
 sudo chmod g-s linux-build-3.4.67-rtai-4.0 -R
 ```
+
+## RTAI 4.0
+#### Download
+
+```bash
+#linux
+```
+
+
 
 ```bash
 cd /usr/local/src
@@ -56,9 +42,11 @@ tar xjf rtai-4.0.tar.bz2
 ln -s rtai-4.0 rtai
 ```
 
+Let's use your computer's full power (speeds up the compilation):
 ```bash
 sudo -s
-echo 'CONCURRENCY_LEVEL= 5' >> /etc/kernel-pkg.conf
+echo "CONCURRENCY_LEVEL=$[$(nproc)+1]" >> /etc/kernel-pkg.conf
+
 exit
 ```
 
