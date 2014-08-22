@@ -30,3 +30,13 @@ we need to build the ec_r8169.ko module for 3.8.13
 We have to use the [CVS magma version](http://cvs.gna.org/cvsweb/magma/?cvsroot=rtai) (latest build). Support for 3.10.32 has been added in may 2014.
 
 we need to build the ec_r8169.ko module for 3.10.32
+
+go to linux-3.10.32/drivers/net/ethernet/realtek
+
+and copy r8169.c to ethercat-1.5.2/devices/r8169-3.10-ethercat.c
+and ethercat-1.5.2/devices/r8169-3.10-orig.c
+
+now open meld and diff the closest previous ethercat version (3.4 for example).
+
+Now add to r8169-3.10-ethercat.c the 'ethercat' functions added.
+
