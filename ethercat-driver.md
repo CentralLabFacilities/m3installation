@@ -21,4 +21,12 @@ The only common kernel here is **3.4.67**.
 
 ## Kernel 3.8.13
 
-This is the last rtai 4.0 officially supported kernel. 
+This is the last rtai 4.0 officially supported kernel.
+we need to build the ec_r8169.ko module for 3.8.13
+
+
+## Kernel 3.10.32
+
+We have to use the [CVS magma version](http://cvs.gna.org/cvsweb/magma/?cvsroot=rtai) (latest build). Support for 3.10.32 has been added in may 2014.
+
+we need to build the ec_r8169.ko module for 3.10.32
