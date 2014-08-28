@@ -1,13 +1,26 @@
 How to build an RTAI patched kernel from scratch
 ======
 
-# The Linux Kernel
-Current version (Works also with 2.6 Kernels, 3.4.6, 3.4.67 , and 3.5.7).
+## The Linux Kernel
+Installation parameters : 
 ```bash
-kernel_version=3.8.13
+# linux Kernel
+kernel_version_major=3
+kernel_version_minor=8
+kernel_version_patch=13
+
+kernel_version=$kernel_version_major.$kernel_version_minor.$kernel_version_patch
+# rtai
+rtai_version=4.0
+
+```
+Let's create a nice folder to put everything (make sure you have at least ~2GB free space) :
+```bash
+mkdir ~/linux-$kernel_version-rtai-$rtai_version
+cd ~/linux-$kernel_version-rtai-$rtai_version
 ```
 
-## Prerequisites
+#### Prerequisites
 For menuconfig to work:
 ```bash
 sudo apt-get install libncurses5-dev kernel-package libc6-dev
@@ -17,44 +30,41 @@ And for xconfig to work:
 sudo apt-get install qt4-qmake libqt4-dev
 ```
 
-## Preparation
+#### Download the kernel
+
 ```bash
-wget https://www.kernel.org/pub/linux/kernel/v3.x/linux-3.4.67.tar.bz2
-tar xjf linux-3.4.67.tar.bz2
-mv linux-3.4.67 linux-build-3.4.67-rtai-4.0
-ln -snf linux-build-3.4.67-rtai-4.0 linux
-sudo chmod g-s linux-build-3.4.67-rtai-4.0 -R
+cd ~/linux-$kernel_version-rtai-$rtai_version
+wget https://www.kernel.org/pub/linux/kernel/v$kernel_version_major.x/linux-$kernel_version.tar.bz2
+tar xjf linux-$kernel_version.tar.bz2
+ln -snf linux-$kernel_version linux
 ```
 
-## RTAI 4.0
+## RTAI (3.x, 4.x)
 #### Download
 
 ```bash
-#linux
-```
-
-
-
-```bash
-cd /usr/local/src
-wget --no-check-certificate https://www.rtai.org/userfiles/downloads/RTAI/rtai-4.0.tar.bz2
-tar xjf rtai-4.0.tar.bz2
-ln -s rtai-4.0 rtai
+cd ~/linux-$kernel_version-rtai-$rtai_version
+wget --no-check-certificate https://www.rtai.org/userfiles/downloads/RTAI/rtai-$rtai_version.tar.bz2
+tar xjf rtai-$rtai_version.tar.bz2
+ln -snf rtai-$rtai_version rtai
 ```
 
 Let's use your computer's full power (speeds up the compilation):
 ```bash
 sudo -s
 echo "CONCURRENCY_LEVEL=$[$(nproc)+1]" >> /etc/kernel-pkg.conf
-
 exit
 ```
+#### Apply the patch to the kernel 
 
 ```bash
-cd /usr/src/linux
-sudo patch -p1 -b < /usr/local/src/rtai/base/arch/x86/patches/hal-linux-3.4.67-x86-4.patch
+sudo patch -p1 -b < cd ~/linux-$kernel_version-rtai-$rtai_version/rtai/base/arch/x86/patches/hal-linux-$kernel_version.patch
 ```
 
+> Note : You might need to 'tab' to check the exact name of the above patch.
+
+
+#### Configure your realtime kernel 
 ```bash
 cd /usr/src/linux
 sudo cp /boot/config-`uname -r` ./.config
