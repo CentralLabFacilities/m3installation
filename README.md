@@ -198,7 +198,7 @@ git submodule foreach git checkout master
 #### Holomni PCV for the mobile base
 > If on Ubuntu 14.04 LTS:
 ```bash
-sudo add-apt-repository ppa:hoarau-robotics/ppa
+sudo -E add-apt-repository ppa:hoarau-robotics/ppa
 sudo apt-get update
 sudo apt-get install holomni-pcv
 ```
