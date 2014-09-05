@@ -262,6 +262,7 @@ source ~/.bashrc
 
 ### Get time synchronization for ROS (HIGHLY RECOMMENDED)
 ```bash
+sudo apt-get install ntp
 sudo nano /etc/ntp.conf
 ```
 Comment all the servers lines and add 'server ensta.ensta.fr'.
