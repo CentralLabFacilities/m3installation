@@ -233,8 +233,8 @@ echo '
 
 #export M3_ROBOT=~/mekabot/m3ens/real_meka # Real meka config
 export M3_ROBOT=~/mekabot/m3ens/virtual_meka # Simulated Meka
-
 export MALLOC_CHECK_=0 # Some Hack for Python
+source /usr/local/share/m3/setup.bash
 
 ##################################################################
 ## ROS
