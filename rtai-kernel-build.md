@@ -27,7 +27,7 @@ sudo apt-get install libncurses5-dev kernel-package libc6-dev
 ```
 And for xconfig to work:
 ```bash
-sudo apt-get install qt4-qmake libqt4-dev
+sudo apt-get install qt4-dev-tools
 ```
 
 #### Download the kernel
@@ -58,7 +58,8 @@ exit
 #### Apply the patch to the kernel 
 
 ```bash
-sudo patch -p1 -b < cd ~/linux-$kernel_version-rtai-$rtai_version/rtai/base/arch/x86/patches/hal-linux-$kernel_version.patch
+cd ~/linux-$kernel_version-rtai-$rtai_version/linux
+patch -p1 -b < cd ~/linux-$kernel_version-rtai-$rtai_version/rtai/base/arch/x86/patches/hal-linux-$kernel_version.patch
 ```
 
 > Note : You might need to 'tab' to check the exact name of the above patch.
@@ -66,10 +67,9 @@ sudo patch -p1 -b < cd ~/linux-$kernel_version-rtai-$rtai_version/rtai/base/arch
 
 #### Configure your realtime kernel 
 ```bash
-cd /usr/src/linux
-sudo cp /boot/config-`uname -r` ./.config
-sudo make oldconfig
-sudo make xconfig
+cd ~/linux-$kernel_version-rtai-$rtai_version/linux
+make oldconfig
+make xconfig
 ```
 
 * Loadable module support ---> Module versioning support ---> disabled
@@ -85,36 +85,30 @@ sudo make xconfig
 * General setup > Local version - append to kernel release = -rtai-4.0
 
 ```bash
-sudo make-kpkg clean
-sudo  make-kpkg --rootcmd fakeroot --initrd kernel_image kernel_headers
+make-kpkg clean
+make-kpkg --rootcmd fakeroot --initrd kernel_image kernel_headers
 ```
 
-```bash
-sudo make-kpkg clean 
-```
 
 ```bash
-cd /usr/src/
-sudo dpkg -i linux-headers-3.4.67-rtai-4.0_3.4.67-rtai-4.0-10.00.Custom_i386.deb
-sudo dpkg -i linux-image-3.4.67-rtai-4.0_3.4.67-rtai-4.0-10.00.Custom_i386.deb
+cd ~/linux-$kernel_version-rtai-$rtai_version/
+sudo dpkg -i linux-headers-$kernel_version-rtai-$rtai_version_$kernel_version-rtai-$rtai_version-10.00.Custom_i386.deb
+sudo dpkg -i linux-image-$kernel_version-rtai-$rtai_version_$kernel_version-rtai-$rtai_version-10.00.Custom_i386.deb
 ```
 
-```bash
-cd /usr/src/linux
-sudo make modules_prepare
-```
 
 ```bash
-cd /usr/local/src/rtai
-sudo mkdir build
+cd ~/linux-$kernel_version-rtai-$rtai_version/rtai
+mkdir build
 cd build
-sudo make -f ../makefile menuconfig
+make -f ../makefile menuconfig
 ```
 
 * General > Linux source tree = /usr/src/linux
 * Machine (x86) > Number of CPUs = (2) for Core-Duo or (4) for Quad-Core
 * DISABLE COMEDI
 * ENABLE MATH FUNC IN KERNEL
+
 
 ```bash
 sudo apt-get install gcc-multilib g++-multilib libc6-dev
