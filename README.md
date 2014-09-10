@@ -97,12 +97,11 @@ sudo ldconfig
 
 
 ## Install ROS
-!### If not at ENSTA
 ```bash
 codename=`cat /etc/lsb-release | grep -m 1 "DISTRIB_CODENAME=" | cut -d "=" -f2`
 sudo sh -c "echo 'deb http://packages.ros.org/ros/ubuntu $codename main' > /etc/apt/sources.list.d/ros-latest.list"
 ```
-!### If at ENSTA (Just to go faster, you can use the above one)
+#### For Ensta people : use local repo (way faster)
 ```bash
 codename=`cat /etc/lsb-release | grep -m 1 "DISTRIB_CODENAME=" | cut -d "=" -f2`
 sudo sh -c "echo 'deb http://fermion.ensta.fr/ros/ubuntu $codename main' > /etc/apt/sources.list.d/ros-latest.list"
