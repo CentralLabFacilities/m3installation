@@ -6,8 +6,8 @@ Installation parameters :
 ```bash
 # linux Kernel
 kernel_version_major=3
-kernel_version_minor=8
-kernel_version_patch=13
+kernel_version_minor=10
+kernel_version_patch=32
 
 kernel_version=$kernel_version_major.$kernel_version_minor.$kernel_version_patch
 # rtai
@@ -34,7 +34,7 @@ sudo apt-get install qt4-dev-tools
 
 ```bash
 cd ~/linux-$kernel_version-rtai-$rtai_version
-wget https://www.kernel.org/pub/linux/kernel/v$kernel_version_major.x/linux-$kernel_version.tar.bz2
+wget https://www.kernel.org/pub/linux/kernel/v$kernel_version_major.x/linux-$kernel_version.tar.gz
 tar xjf linux-$kernel_version.tar.bz2
 ln -snf linux-$kernel_version linux
 ```
