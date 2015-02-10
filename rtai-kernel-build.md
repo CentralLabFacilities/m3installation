@@ -35,11 +35,11 @@ sudo apt-get install qt4-dev-tools
 ```bash
 cd ~/linux-$kernel_version-rtai-$rtai_version
 wget https://www.kernel.org/pub/linux/kernel/v$kernel_version_major.x/linux-$kernel_version.tar.gz
-tar xjf linux-$kernel_version.tar.gz
+tar xvf linux-$kernel_version.tar.gz
 ln -snf linux-$kernel_version linux
 ```
 
-## RTAI (3.x, 4.x)
+## RTAI 4.x
 #### Download
 
 ```bash
