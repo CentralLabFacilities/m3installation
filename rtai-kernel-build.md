@@ -42,6 +42,13 @@ ln -snf linux-$kernel_version linux
 ## RTAI 4.x
 #### Download
 
+##### ShabbyX repo
+
+```bash
+git clone https://github.com/ShabbyX/RTAI.git rtai
+```
+
+##### Deprecated (use shabbyx repo instead)
 ```bash
 cd ~/linux-$kernel_version-rtai-$rtai_version
 wget --no-check-certificate https://www.rtai.org/userfiles/downloads/RTAI/rtai-$rtai_version.tar.bz2
