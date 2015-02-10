@@ -56,7 +56,7 @@ tar xjf rtai-$rtai_version.tar.bz2
 ln -snf rtai-$rtai_version rtai
 ```
 
-Let's use your computer's full power (speeds up the compilation):
+Let's use your computer's full power (multi-threaded build):
 ```bash
 sudo -s
 echo "CONCURRENCY_LEVEL=$[$(nproc)+1]" >> /etc/kernel-pkg.conf
