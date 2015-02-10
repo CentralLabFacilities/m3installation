@@ -59,10 +59,10 @@ exit
 
 ```bash
 cd ~/linux-$kernel_version-rtai-$rtai_version/linux
-patch -p1 -b < cd ~/linux-$kernel_version-rtai-$rtai_version/rtai/base/arch/x86/patches/hal-linux-$kernel_version.patch
+patch=$(find ~/linux-$kernel_version-rtai-$rtai_version/rtai/base/arch/x86/patches/ -name "*$kernel_version*" | tail -1)
+echo "Applying $patch"
+patch -p1 -b < $patch
 ```
-
-> Note : You might need to 'tab' to check the exact name of the above patch.
 
 
 #### Configure your realtime kernel 
