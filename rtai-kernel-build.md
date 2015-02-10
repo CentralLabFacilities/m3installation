@@ -79,23 +79,34 @@ yes "" | make oldconfig
 make xconfig
 ```
 
-* Loadable module support ---> Module versioning support ---> disabled
-* Processor type and features ---> Processor Family ---> Core2/Xenon
-* Processor type and features ---> HPET Timer Support ---> disabled
-* Processor type and features ---> Interrupt pipeline ---> enabled [*]
-* Processor type and features ---> Support sparse irq numbering ---> disabled
-* Device Drivers ---> Staging Drivers ---> disabled
-* Device Drivers ---> Sound Card Support ---> Open Sound System ---> disabled
-* Power management options > Power Management support = no
-* Power management options > CPU Frequency scaling > CPU Frequency scaling = no
+#### Example for kernel 3.10.32
 
-* General setup > Local version - append to kernel release = -rtai-4.0
+* General Setup ---> local version -append to kernel release: -rtai4.0
+* General Setup ---> Timer Subsystem ---> Timer tick handling ---> Periodic timer ticks (constant rate, no dynticks)
+* General Setup ---> Timer Subsystem ---> High Resolution Timer Support ---> disabled
+* General Setup ---> Enable loadable module support ---> Module versioning support ---> disable
+* Processor type and features ---> Processor Family ---> Core2/nexer Xenon if "more /proc/cpuinfo | grep family" says "6"
+* Processor type and features ---> SMT (Hyperthreading) scheduler support ---> disabled
+* Processor type and features ---> Preemption Model ---> Preemptible Kernel (Low-Latency Desktop)
+* Processor type and features ---> Timer Frequency ---> 1000 Hz
+* Power management and ACPI options ---> remove everything
+* Power management and ACPI options ---> ACPI ----> remove every thing **except** Power Management Timer Support (and button, let it be a kernel module (dot) )
+* Power management and ACPI options ---> CPU Frequency scaling ---> disabled
+* Power management and ACPI options ---> Memory Power savings ---> Intel chipset idle memory power saving driver ---> disabled 
+
+
+Save and close the window.
+
+
+> Note: You can find some configuration hints on the xenomai website : http://xenomai.org/2014/06/configuring-for-x86-based-dual-kernels/
+
+#### Compile the kernel
 
 ```bash
 make-kpkg clean
 make-kpkg --rootcmd fakeroot --initrd kernel_image kernel_headers
 ```
-
+Now take a cofee and come back in ~20min.
 
 ```bash
 cd ~/linux-$kernel_version-rtai-$rtai_version/
