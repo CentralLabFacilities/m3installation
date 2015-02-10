@@ -75,7 +75,7 @@ patch -p1 -b < $patch
 #### Configure your realtime kernel 
 ```bash
 cd ~/linux-$kernel_version-rtai-$rtai_version/linux
-make oldconfig
+yes "" | make oldconfig
 make xconfig
 ```
 
@@ -103,81 +103,4 @@ sudo dpkg -i linux-headers-$kernel_version-rtai-$rtai_version_$kernel_version-rt
 sudo dpkg -i linux-image-$kernel_version-rtai-$rtai_version_$kernel_version-rtai-$rtai_version-10.00.Custom_i386.deb
 ```
 
-
-```bash
-cd ~/linux-$kernel_version-rtai-$rtai_version/rtai
-mkdir build
-cd build
-make -f ../makefile menuconfig
-```
-
-* General > Linux source tree = /usr/src/linux
-* Machine (x86) > Number of CPUs = (2) for Core-Duo or (4) for Quad-Core
-* DISABLE COMEDI
-* ENABLE MATH FUNC IN KERNEL
-
-
-```bash
-sudo apt-get install gcc-multilib g++-multilib libc6-dev
-sudo ln -s /usr/include/i386-linux-gnu/gnu/stubs-32.h /usr/include/gnu/stubs-32.h
-sudo make install
-```
-
-```bash
-sudo cp -a /dev/rtai_shm /lib/udev/devices/
-sudo cp -a /dev/rtf[0-9] /lib/udev/devices/
-```
-
-```bash
-
- sudo -s
-      echo /usr/realtime/lib/ > /etc/ld.so.conf.d/rtai.conf
-      exit
-      sudo ldconfig
-
-
-The RTAI binaries directory can be added automatically to the $PATH variable. To do that,add
-
-      /usr/realtime/bin
-to /etc/environment and then
-
-   source /etc/environment
-```
-```bash
-sudo apt-get install udev
-cd /usr/local/src
-wget http://www.etherlab.org/download/ethercat/ethercat-1.5.2.tar.bz2
-tar xjf ethercat-1.5.2.tar.bz2
-ln -s ethercat-1.5.2 ethercat
-cd ethercat
-./configure --enable-cycles --with-rtai-dir=/usr/realtime --enable-r8169 --disable-8139too --enable-e1000 --enable-e1000e
-make all modules
-sudo make modules_install install
-sudo depmod
-```
-```bash
-sudo ifconfig
-sudo mkdir /etc/sysconfig/
-sudo cp /opt/etherlab/etc/sysconfig/ethercat /etc/sysconfig/
-sudo nano /etc/sysconfig/ethercat
-```
-
-
-MASTER0_DEVICE="00:04:A7:09:77:68"
-DEVICE_MODULES="r8169"
-
-
-```bash
-cd /opt/etherlab
-sudo cp etc/init.d/ethercat /etc/init.d/
-sudo chmod a+x /etc/init.d/ethercat
-sudo update-rc.d ethercat start 51 S .
-```
-```bash
-sudo ln -s /opt/etherlab/bin/ethercat /usr/local/bin/ethercat
-sudo /etc/init.d/ethercat start
-```
-```bash
-wget http://perso.ensta-paristech.fr/~hoarau/rtmeka-kern/x86/linux-headers-3.8.13-rtmeka4.0_3.8.13-rtmeka4.0-10.00.Custom_i386.deb
-wget http://perso.ensta-paristech.fr/~hoarau/rtmeka-kern/x86/linux-image-3.8.13-rtmeka4.0_3.8.13-rtmeka4.0-10.00.Custom_i386.deb
-```
+Now reboot on the new kernel. 
