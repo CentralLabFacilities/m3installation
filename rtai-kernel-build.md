@@ -100,7 +100,7 @@ Save and close the window.
 
 > Note: You can find some configuration hints on the xenomai website : http://xenomai.org/2014/06/configuring-for-x86-based-dual-kernels/
 
-#### Compile the kernel
+#### Compile the new RT kernel
 
 ```bash
 make-kpkg clean
@@ -108,10 +108,13 @@ make-kpkg --rootcmd fakeroot --initrd kernel_image kernel_headers
 ```
 Now take a cofee and come back in ~20min.
 
+
+#### Install the new RT kernel
+
 ```bash
 cd ~/linux-$kernel_version-rtai-$rtai_version/
 sudo dpkg -i linux-headers-$kernel_version-rtai-$rtai_version_$kernel_version-rtai-$rtai_version-10.00.Custom_i386.deb
 sudo dpkg -i linux-image-$kernel_version-rtai-$rtai_version_$kernel_version-rtai-$rtai_version-10.00.Custom_i386.deb
 ```
 
-Now reboot on the new kernel. 
+Now reboot on the new kernel to test it.
